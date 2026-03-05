@@ -48,8 +48,17 @@ class NeuralNetwork:
         self.loss_fn = LOSS_FUNCTIONS[cli_args.loss]()
         self.lr = cli_args.learning_rate
         self.weight_decay = cli_args.weight_decay
-        self.num_layers = cli_args.num_layers
-        self.hidden_size = cli_args.hidden_size
+        
+        if hasattr(cli_args, "num_layers"):
+            self.num_layers = cli_args.num_layers
+        else:
+            self.num_layers = cli_args.num_hidden_layers
+
+        if hasattr(cli_args, "hidden_size"):
+            self.hidden_size = cli_args.hidden_size
+        else:   
+            self.hidden_size = cli_args.hidden_layer_sizes
+            
         # self.activation = ACTIVATIONS[cli_args.activation]()
         self.weight_init = cli_args.weight_init
         self.optim = OPTIMIZERS[cli_args.optimizer](self.lr)
