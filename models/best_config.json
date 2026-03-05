@@ -1,0 +1,1 @@
+{"learning_rate": 0.0005223702395699795, "batch_size": 64, "optimizer": "nadam", "activation": "relu", "weight_init": "xavier", "weight_decay": 0.0001755380601170542, "num_layers": 1, "hidden_size": [128], "loss": "cross_entropy"}
