@@ -23,7 +23,7 @@ def parse_arguments():
     parser.add_argument('-a', '--activation', type=str, default='relu', choices=['relu', 'sigmoid', 'tanh'], help='Choose activation function for the Hidden Layers.')
     parser.add_argument('-w_i', '--weight_init', type=str, default='xavier', choices=['random', 'xavier', 'zero'], help='Choose the weight initialization strategy.')
     parser.add_argument('-w_p', '--wandb_project', type=str, help='Choose a name for Wandb Report.')
-    parser.add_argument('-mp', '--model_save_path', type=str, default="src/best_model.npy", help='Relative location to save the best model.')
+    parser.add_argument('-mp', '--model_save_path', type=str, default="best_model.npy", help='Relative location to save the best model.')
 
     return parser.parse_args()
 
