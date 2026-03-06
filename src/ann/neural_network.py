@@ -109,6 +109,10 @@ class NeuralNetwork:
 
         for i in range(len(self.layers)-1, -1, -1):
             dA = self.layers[i].backward(dA)
+
+            l2_grad = self.weight_decay * self.layers[i].W
+            self.layers[i].grad_W += l2_grad
+
             grad_W_list.append(self.layers[i].grad_W)
             grad_b_list.append(self.layers[i].grad_b)
 
