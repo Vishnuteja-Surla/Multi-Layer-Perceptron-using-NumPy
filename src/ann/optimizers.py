@@ -3,9 +3,8 @@ import numpy as np
 class Optimizer:
     """Base class for all optimizers."""
 
-    def __init__(self, learning_rate=0.01, weight_decay=0.0):
+    def __init__(self, learning_rate=0.01):
         self.lr = learning_rate
-        self.weight_decay = weight_decay
 
     def update(self, layers):
         """
@@ -21,8 +20,7 @@ class SGD(Optimizer):
 
     def update(self, layers):
         for layer in layers:
-            grad_W_with_decay = layer.grad_W + (self.weight_decay * layer.W)
-            layer.W = layer.W - (self.lr * grad_W_with_decay)
+            layer.W = layer.W - (self.lr * layer.grad_W)
             layer.b = layer.b - (self.lr * layer.grad_b)
 
 class Momentum(Optimizer):
@@ -43,8 +41,7 @@ class Momentum(Optimizer):
 
         for i, layer in enumerate(layers):
             # Velocities Update Step
-            grad_W_with_decay = layer.grad_W + (self.weight_decay * layer.W)
-            self.velocities[i]["v_W"] = self.beta * self.velocities[i]["v_W"] + (1 - self.beta) * grad_W_with_decay
+            self.velocities[i]["v_W"] = self.beta * self.velocities[i]["v_W"] + (1 - self.beta) * layer.grad_W
             self.velocities[i]["v_b"] = self.beta * self.velocities[i]["v_b"] + (1 - self.beta) * layer.grad_b          
 
             # Weight Update Step
@@ -68,12 +65,11 @@ class NAG(Optimizer):
 
         for i, layer in enumerate(layers):
             # Velocities Update Step
-            grad_W_with_decay = layer.grad_W + (self.weight_decay * layer.W)
-            self.velocities[i]["v_W"] = self.beta * self.velocities[i]["v_W"] + (1 - self.beta) * grad_W_with_decay
+            self.velocities[i]["v_W"] = self.beta * self.velocities[i]["v_W"] + (1 - self.beta) * layer.grad_W
             self.velocities[i]["v_b"] = self.beta * self.velocities[i]["v_b"] + (1 - self.beta) * layer.grad_b            
 
             # Weight Update Step
-            layer.W = layer.W - self.lr * (self.beta * self.velocities[i]["v_W"] + (1 - self.beta) * grad_W_with_decay)
+            layer.W = layer.W - self.lr * (self.beta * self.velocities[i]["v_W"] + (1 - self.beta) * layer.grad_W)
             layer.b = layer.b - self.lr * (self.beta * self.velocities[i]["v_b"] + (1 - self.beta) * layer.grad_b)
 
 class RMSprop(Optimizer):
@@ -94,12 +90,11 @@ class RMSprop(Optimizer):
 
         for i, layer in enumerate(layers):
             # Cache Update Step
-            grad_W_with_decay = layer.grad_W + (self.weight_decay * layer.W)
-            self.caches[i]["c_W"] = self.beta * self.caches[i]["c_W"] + (1 - self.beta) * (grad_W_with_decay ** 2)
+            self.caches[i]["c_W"] = self.beta * self.caches[i]["c_W"] + (1 - self.beta) * (layer.grad_W ** 2)
             self.caches[i]["c_b"] = self.beta * self.caches[i]["c_b"] + (1 - self.beta) * (layer.grad_b ** 2)
 
             # Weight Update Step
-            layer.W = layer.W - (self.lr / (np.sqrt(self.caches[i]["c_W"]) + self.epsilon)) * grad_W_with_decay
+            layer.W = layer.W - (self.lr / (np.sqrt(self.caches[i]["c_W"]) + self.epsilon)) * layer.grad_W
             layer.b = layer.b - (self.lr / (np.sqrt(self.caches[i]["c_b"]) + self.epsilon)) * layer.grad_b
 
 class Adam(Optimizer):
@@ -125,10 +120,9 @@ class Adam(Optimizer):
         self.t += 1
         for i, layer in enumerate(layers):
             # Moment Update Step
-            grad_W_with_decay = layer.grad_W + (self.weight_decay * layer.W)
-            self.moments[i]["m_W"] = self.beta1 * self.moments[i]["m_W"] + (1 - self.beta1) * grad_W_with_decay
+            self.moments[i]["m_W"] = self.beta1 * self.moments[i]["m_W"] + (1 - self.beta1) * layer.grad_W
             m_W_hat = self.moments[i]["m_W"] / (1 - (self.beta1 ** self.t))
-            self.moments[i]["v_W"] = self.beta2 * self.moments[i]["v_W"] + (1 - self.beta2) * (grad_W_with_decay ** 2)
+            self.moments[i]["v_W"] = self.beta2 * self.moments[i]["v_W"] + (1 - self.beta2) * (layer.grad_W ** 2)
             v_W_hat = self.moments[i]["v_W"] / (1 - (self.beta2 ** self.t))
 
             self.moments[i]["m_b"] = self.beta1 * self.moments[i]["m_b"] + (1 - self.beta1) * layer.grad_b
@@ -163,11 +157,10 @@ class NAdam(Optimizer):
         self.t += 1
         for i, layer in enumerate(layers):
             # Moment Update Step
-            grad_W_with_decay = layer.grad_W + (self.weight_decay * layer.W)
-            self.moments[i]["m_W"] = self.beta1 * self.moments[i]["m_W"] + (1 - self.beta1) * grad_W_with_decay
+            self.moments[i]["m_W"] = self.beta1 * self.moments[i]["m_W"] + (1 - self.beta1) * layer.grad_W
             m_W_hat = self.moments[i]["m_W"] / (1 - (self.beta1 ** self.t))
-            m_W_nesterov = (self.beta1 * m_W_hat) + ((1 - self.beta1) * grad_W_with_decay) / (1 - (self.beta1 ** self.t))
-            self.moments[i]["v_W"] = self.beta2 * self.moments[i]["v_W"] + (1 - self.beta2) * (grad_W_with_decay ** 2)
+            m_W_nesterov = (self.beta1 * m_W_hat) + ((1 - self.beta1) * layer.grad_W) / (1 - (self.beta1 ** self.t))
+            self.moments[i]["v_W"] = self.beta2 * self.moments[i]["v_W"] + (1 - self.beta2) * (layer.grad_W ** 2)
             v_W_hat = self.moments[i]["v_W"] / (1 - (self.beta2 ** self.t))
             
             self.moments[i]["m_b"] = self.beta1 * self.moments[i]["m_b"] + (1 - self.beta1) * layer.grad_b
