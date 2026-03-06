@@ -60,7 +60,8 @@ class NeuralLayer:
         dZ: (batch_size, output_size).
         grad_W: (input_size, output_size).
         """
+        b = dA.shape[0]
         dZ = self.activation.backward(dA)
-        self.grad_W = np.dot(self.A_prev.T, dZ)
-        self.grad_b = np.sum(dZ, axis=0, keepdims=True)
+        self.grad_W = np.dot(self.A_prev.T, dZ) / b
+        self.grad_b = np.sum(dZ, axis=0, keepdims=True) / b
         return np.dot(dZ, self.W.T)

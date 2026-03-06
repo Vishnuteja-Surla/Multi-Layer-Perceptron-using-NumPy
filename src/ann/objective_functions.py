@@ -20,7 +20,7 @@ class MSE(Loss):
 
     def backward(self, y_true, logits):
         b = y_true.shape[0]    # Batch Size
-        return (logits - y_true) / b
+        return (logits - y_true)
 
 
 class CrossEntropy(Loss):
@@ -33,7 +33,7 @@ class CrossEntropy(Loss):
         logits_shifted = logits - np.max(logits, axis=1, keepdims=True)
         probs = np.exp(logits_shifted) / np.sum(np.exp(logits_shifted), axis=1, keepdims=True)
 
-        return -1/b * np.sum(y_true * np.log(np.maximum(probs, 1e-15)))   # Lower Bounding probability to avoid log(0) 
+        return -1/b * np.sum(y_true * np.log(probs + 1e-9))   # Lower Bounding probability to avoid log(0) 
 
     def backward(self, y_true, logits):
         b = y_true.shape[0] # Batch Size
@@ -42,4 +42,4 @@ class CrossEntropy(Loss):
         logits_shifted = logits - np.max(logits, axis=1, keepdims=True)
         probs = np.exp(logits_shifted) / np.sum(np.exp(logits_shifted), axis=1, keepdims=True)
 
-        return (probs - y_true) / b
+        return (probs - y_true)
