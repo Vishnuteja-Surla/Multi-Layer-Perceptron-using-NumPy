@@ -156,7 +156,13 @@ class NeuralNetwork:
                 self.backward(y_batch, y_pred)
                 self.update_weights()
 
+            l2_penalty = 0
+            for layer in self.layers:
+                l2_penalty += np.sum(layer.W ** 2)
+            l2_penalty = (self.weight_decay / 2.0) * l2_penalty
+
             train_loss, train_acc, train_f1 = self.evaluate(X_tr, y_tr, batch_size)
+            train_loss += l2_penalty
             val_loss, val_acc, val_f1 = self.evaluate(X_val, y_val, batch_size)
 
             log_dict = {
@@ -165,6 +171,7 @@ class NeuralNetwork:
                 "train_acc": train_acc,
                 "val_loss": val_loss,
                 "val_acc": val_acc,
+                "val_f1": val_f1,
                 "layer_0_grad_norm": np.linalg.norm(self.layers[0].grad_W)  # For Question 2.4 we need this line
             }
 
@@ -191,7 +198,7 @@ class NeuralNetwork:
                 best_val_f1 = val_f1
                 self.best_weights = self.get_weights()
             
-            print(f"Epoch-{epoch+1}: Train Loss = {train_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Accuracy = {val_acc:.4f}")
+            print(f"Epoch-{epoch+1}: Train Loss = {train_loss:.4f}, Train Accuracy = {train_acc:.4f}, Val Accuracy = {val_acc:.4f}, Val F1 = {val_f1:.4f}")
     
 
     def evaluate(self, X, y, batch_size=256):
@@ -222,12 +229,12 @@ class NeuralNetwork:
             batch_correct = np.sum(predicted_classes_batch == actual_classes_batch)
             total_correct += batch_correct
 
-        l2_penalty = 0
-        for layer in self.layers:
-            l2_penalty += np.sum(layer.W ** 2)
-        l2_penalty = (self.weight_decay/2.0) * l2_penalty
+        # l2_penalty = 0
+        # for layer in self.layers:
+        #     l2_penalty += np.sum(layer.W ** 2)
+        # l2_penalty = (self.weight_decay/2.0) * l2_penalty
         
-        total_loss = (total_loss / num_samples) + l2_penalty
+        total_loss = (total_loss / num_samples)
         accuracy = total_correct / num_samples
 
         y_true_classes = np.argmax(y, axis=1)
