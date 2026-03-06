@@ -53,7 +53,7 @@ def main():
     if model.best_weights is not None:
         np.save(args.model_save_path, model.best_weights)
 
-        with open("src/best_config.json", "w") as f:
+        with open("best_config.json", "w") as f:
             json.dump(vars(args), f, indent=4)
         print("Best model and configuration saved successfully!")
     

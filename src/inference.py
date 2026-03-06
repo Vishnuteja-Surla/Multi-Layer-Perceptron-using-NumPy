@@ -65,7 +65,7 @@ def main():
 
     # Update the args to match the best model configuration
     try:
-        with open("src/best_config.json", "r") as f:
+        with open("best_config.json", "r") as f:
             saved_config = json.load(f)
         vars(args).update(saved_config)
     except FileNotFoundError:
