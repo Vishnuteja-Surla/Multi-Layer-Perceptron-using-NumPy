@@ -180,9 +180,9 @@ class NeuralNetwork:
             for j in range(self.num_layers):
                 if isinstance(self.layers[j].activation, ReLU):
                     # Calculate percentage of zero activations in the current batch's cache
-                    dead_pct = np.mean(self.layers[j].activation.cache <= 0.0) * 100 
+                    dead_pct = np.mean(self.layers[j].activation.cache <= 1e-2) * 100 
                     log_dict[f"layer_{j}_dead_neurons_pct"] = dead_pct
-
+                    log_dict[f"layer_{j}_activations"] = np.mean(self.layers[j].activation.cache)  # Average activation value for the layer
                     log_dict[f"layer_{j}_activation_dist"] = wandb.Histogram(self.layers[j].activation.cache)
 
                 elif isinstance(self.layers[j].activation, Tanh):
@@ -191,6 +191,8 @@ class NeuralNetwork:
 
                     saturated_pct = np.mean(np.abs(self.layers[j].activation.cache) >= 0.99) * 100
                     log_dict[f"layer_{j}_saturated_neurons_pct"] = saturated_pct
+
+                    log_dict[f"layer_{j}_activation_dist"] = wandb.Histogram(self.layers[j].activation.cache)
 
             wandb.log(log_dict)
 

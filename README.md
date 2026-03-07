@@ -4,6 +4,8 @@ This directory contains the complete implementation, experiments, and analysis f
 
 The focus of this assignment is to **build a fully configurable Multi-Layer Perceptron (MLP) from scratch using NumPy**, implement manual forward and backward propagation, and evaluate the model on **MNIST** and **Fashion-MNIST** datasets.
 
+For the Wandb report of this assignment, click here: [Link](https://api.wandb.ai/links/cs25m050-indian-institute-of-technology-madras/swdcv2xc)
+
 ---
 
 ## Assignment Objectives
