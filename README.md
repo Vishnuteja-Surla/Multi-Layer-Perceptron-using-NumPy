@@ -6,6 +6,8 @@ The focus of this assignment is to **build a fully configurable Multi-Layer Perc
 
 For the public Weights & Biases report detailing the analysis of this assignment, click here: [W&B Report Link](https://api.wandb.ai/links/cs25m050-indian-institute-of-technology-madras/swdcv2xc)
 
+For the codebase of this current project, click here: [GitHub Link](https://github.com/Vishnuteja-Surla/Multi-Layer-Perceptron-using-NumPy)
+
 ---
 
 ## Assignment Objectives
