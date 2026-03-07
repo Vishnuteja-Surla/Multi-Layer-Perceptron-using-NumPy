@@ -4,7 +4,7 @@ This directory contains the complete implementation, experiments, and analysis f
 
 The focus of this assignment is to **build a fully configurable Multi-Layer Perceptron (MLP) from scratch using NumPy**, implement manual forward and backward propagation, and evaluate the model on **MNIST** and **Fashion-MNIST** datasets.
 
-For the Wandb report of this assignment, click here: [Link](https://api.wandb.ai/links/cs25m050-indian-institute-of-technology-madras/swdcv2xc)
+For the public Weights & Biases report detailing the analysis of this assignment, click here: [W&B Report Link](https://api.wandb.ai/links/cs25m050-indian-institute-of-technology-madras/swdcv2xc)
 
 ---
 
@@ -14,12 +14,10 @@ The objectives of this assignment are to:
 
 * Implement a **modular MLP** without using any automatic differentiation libraries
 * Manually derive and code:
-
   * Forward propagation
   * Backpropagation
   * Gradient-based optimization
 * Experiment with different:
-
   * Loss functions
   * Optimizers
   * Activation functions
@@ -33,7 +31,6 @@ The objectives of this assignment are to:
 
 * **Frameworks prohibited**: PyTorch, TensorFlow, JAX, or any library providing automatic differentiation
 * **Permitted libraries**:
-
   * `numpy` (core implementation)
   * `keras.datasets` (data loading)
   * `scikit-learn` (splits, metrics)
@@ -56,34 +53,29 @@ Both `train.py` and `inference.py` are fully configurable via `argparse`.
 | `--dataset`       | `mnist` or `fashion_mnist`                           |
 | `--epochs`        | Number of training epochs                            |
 | `--batch_size`    | Mini-batch size                                      |
-| `--loss`          | `mse` or `cross_entropy`                             |
-| `--optimizer`     | `sgd`, `momentum`, `nag`, `rmsprop`, `adam`, `nadam` |
+| `--loss`          | `mean_squared_error` or `cross_entropy`              |
+| `--optimizer`     | `sgd`, `momentum`, `nag`, `rmsprop`|
 | `--learning_rate` | Initial learning rate                                |
 | `--weight_decay`  | L2 regularization coefficient                        |
 | `--num_layers`    | Number of hidden layers                              |
-| `--hidden_size`   | Neurons per hidden layer (list)                      |
+| `--hidden_size`   | Neurons per hidden layer (space-separated list)      |
 | `--activation`    | `sigmoid`, `tanh`, or `relu`                         |
-| `--weight_init`   | `random` or `xavier`                                 |
+| `--weight_init`   | `random`, `xavier`, or `zeros`                       |
 
 ---
 
 ## Implementation Notes
 
 * **Manual Gradient Computation**
-
   * Each layer stores gradients explicitly:
-
     * `self.grad_W`
     * `self.grad_b`
 * **Gradient Verification**
-
   * Analytical gradients match numerical gradients within tolerance `1e-7`
 * **Model Serialization**
-
   * Exactly one model (`best_model.npy`) is submitted
   * Selection criterion: **highest test F1-score**
 * **Evaluation Metrics**
-
   * Accuracy
   * Precision
   * Recall
@@ -119,7 +111,7 @@ A **public Weights & Biases report** accompanies this assignment and includes:
 ## Timeline
 
 * **Release Date:** 9 Feb 2026
-* **Deadline:** 1 Mar 2026
+* **Deadline:** 7 Mar 2026 (11:59 PM)
 * **Submission Platform:** Gradescope
 
 ---
